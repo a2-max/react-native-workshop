@@ -3,7 +3,7 @@ import React from "react";
 import { Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const TaskCard = () => {
+export const TaskCard = () => {
     return (
         <View style={styles.card}>
             <Pressable style={styles.markButton}>
