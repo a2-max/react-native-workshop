@@ -15,11 +15,10 @@ const Home = () => {
   const handleClick = () => {
     // Linking.openURL("https://mbmc.edu.np");
     Alert.alert("Thanks for clicking")
-
   }
   return (
     <SafeAreaView>
-      <View style={styles.main}>
+      <View style={styles.main}> 
         <Image source={MBMC} style={styles.image} />
         <Text style={styles.titleText}>Welcome to MBM College</Text>
 
