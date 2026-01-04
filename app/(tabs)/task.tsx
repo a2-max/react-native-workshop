@@ -1,22 +1,56 @@
+import { completeTask, createTask, getTasks, Task as TaskType } from "@/src/utils/taskStorage";
 import React, { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export const TaskCard = () => {
+type taskCardType = {
+    task: TaskType[],
+    onCompletedAt: (id: string) => void;
+}
+
+export const TaskCard = ({ task, onCompletedAt }: taskCardType) => {
+    const isCompleted = task.completedAt ? true : false;
+
     return (
         <View style={styles.card}>
-            <Pressable style={styles.markButton}>
-                <View style={styles.checked}></View>
+            <Pressable style={styles.markButton} onPress={() => onCompletedAt(task.id)}>
+                {isCompleted && <View style={styles.checked}></View>}
             </Pressable>
-            <Text style={[styles.contentText, styles.completedText]}>
-                Demo Task Demo Task Demo Task Demo Task Demo Task Demo Task Demo Task
+            <Text style={[styles.contentText, isCompleted && styles.completedText]}>
+                {task.content}
             </Text>
         </View>
     )
 }
 
 const Task = () => {
-    const [task, setTask] = useState("");
+    const [task, setTask] = useState<string>("");
+    const [taskList, setTaskList] = useState<TaskType[]>([]);
+
+    const handleSave = async () => {
+        const result = await createTask(task);
+        if (result) {
+            Alert.alert("Task created.");
+            setTask("");
+            fetchTask();
+        }
+    }
+
+    const fetchTask = async () => {
+        const result = await getTasks();
+
+        if (result) {
+            setTaskList(result);
+        }
+    }
+
+    const handleCompleted = async (id: string) => {
+        const result = await completeTask(id);
+        if (result) {
+            Alert.alert("Wooho!", "You've completed this task.");
+            fetchTask();
+        }
+    }
 
     return (
         <SafeAreaView>
@@ -27,15 +61,23 @@ const Task = () => {
                     onChangeText={(text) => { setTask(text) }}
                     value={task}
                 />
-                <TouchableOpacity style={styles.buttonBg}>
+
+                <TouchableOpacity style={styles.buttonBg} onPress={handleSave}>
                     <Text style={styles.buttonText}>Save</Text>
                 </TouchableOpacity>
             </View>
 
-            <TaskCard />
-            <TaskCard />
-            <TaskCard />
-            <TaskCard />
+            <FlatList
+                data={taskList}
+                keyExtractor={(item) => item.id}
+                contentContainerStyle={styles.listWrapper}
+                renderItem={(item) => (
+                    <TaskCard
+                        task={item.item}
+                        onCompletedAt={(id) => { handleCompleted(id) }}
+                    />
+                )}
+            />
         </SafeAreaView>
     )
 }
@@ -77,6 +119,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         gap: 12,
         alignItems: 'center',
+        backgroundColor: '#fff',
+        borderRadius: 4
     },
     markButton: {
         height: 20,
@@ -101,6 +145,11 @@ const styles = StyleSheet.create({
     },
     completedText: {
         textDecorationLine: 'line-through'
+    },
+    listWrapper: {
+        paddingHorizontal: 16,
+        marginTop: 30,
+        gap: 12
     }
 })
 export default Task;

@@ -9,7 +9,6 @@ export type Task = {
     completedAt?: string | null;
 };
 
-
 const generateId = (): string => {
     return (
         Date.now().toString()
