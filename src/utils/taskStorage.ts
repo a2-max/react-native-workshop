@@ -12,7 +12,7 @@ export type Task = {
 
 const generateId = (): string => {
     return (
-        Date.now().toString(36)
+        Date.now().toString()
     );
 };
 
@@ -25,7 +25,6 @@ export const getTasks = async (): Promise<Task[]> => {
         return [];
     }
 };
-
 
 export const createTask = async (content: string): Promise<Task[]> => {
     try {
@@ -51,30 +50,6 @@ export const createTask = async (content: string): Promise<Task[]> => {
     }
 };
 
-
-export const updateTask = async (
-    id: string,
-    content: string
-): Promise<Task[]> => {
-    try {
-        const tasks = await getTasks();
-
-        const updatedTasks = tasks.map(task =>
-            task.id === id ? { ...task, content } : task
-        );
-
-        await AsyncStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(updatedTasks)
-        );
-
-        return updatedTasks;
-    } catch (error) {
-        console.error('Error updating task:', error);
-        return [];
-    }
-};
-
 export const completeTask = async (id: string): Promise<Task[]> => {
     try {
         const tasks = await getTasks();
@@ -94,32 +69,5 @@ export const completeTask = async (id: string): Promise<Task[]> => {
     } catch (error) {
         console.error('Error completing task:', error);
         return [];
-    }
-};
-
-
-export const deleteTask = async (id: string): Promise<Task[]> => {
-    try {
-        const tasks = await getTasks();
-        const updatedTasks = tasks.filter(task => task.id !== id);
-
-        await AsyncStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(updatedTasks)
-        );
-
-        return updatedTasks;
-    } catch (error) {
-        console.error('Error deleting task:', error);
-        return [];
-    }
-};
-
-
-export const clearAllTasks = async (): Promise<void> => {
-    try {
-        await AsyncStorage.removeItem(STORAGE_KEY);
-    } catch (error) {
-        console.error('Error clearing tasks:', error);
     }
 };

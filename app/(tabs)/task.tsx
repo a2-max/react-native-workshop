@@ -1,5 +1,4 @@
-import { Entypo } from "@expo/vector-icons";
-import React from "react";
+import React, { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -9,18 +8,24 @@ export const TaskCard = () => {
             <Pressable style={styles.markButton}>
                 <View style={styles.checked}></View>
             </Pressable>
-            <Text>Demo Task</Text>
-            <Entypo name="trash" />
+            <Text style={[styles.contentText, styles.completedText]}>
+                Demo Task Demo Task Demo Task Demo Task Demo Task Demo Task Demo Task
+            </Text>
         </View>
     )
 }
+
 const Task = () => {
+    const [task, setTask] = useState("");
+
     return (
         <SafeAreaView>
             <View style={styles.inputWrapper}>
                 <TextInput
                     placeholder="Write your task here..."
                     style={styles.input}
+                    onChangeText={(text) => { setTask(text) }}
+                    value={task}
                 />
                 <TouchableOpacity style={styles.buttonBg}>
                     <Text style={styles.buttonText}>Save</Text>
@@ -62,6 +67,40 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontWeight: 700
+    },
+    card: {
+        borderWidth: 1,
+        borderColor: "#999",
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        elevation: 5, // for shadow
+        flexDirection: 'row',
+        gap: 12,
+        alignItems: 'center',
+    },
+    markButton: {
+        height: 20,
+        width: 20,
+        borderRadius: 50,
+        borderWidth: 1,
+        borderColor: "#666",
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    checked: {
+        height: 10,
+        width: 10,
+        backgroundColor: 'green',
+        borderRadius: 50
+    },
+    contentText: {
+        fontSize: 16,
+        fontWeight: 400,
+        color: "#444",
+        flex: 1
+    },
+    completedText: {
+        textDecorationLine: 'line-through'
     }
 })
 export default Task;
